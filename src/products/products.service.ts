@@ -22,12 +22,26 @@ export class ProductsService extends PrismaClient implements OnModuleInit {
     return this.product.findMany({});
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} product`;
+  async findOne(id: number) {
+    const product = await this.product.findFirst({
+      where: { id, available: true },
+    });
+
+    if (!product) {
+      throw new Error(`Product with id ${id} not found`);
+    }
+    return product;
   }
 
-  update(id: number, updateProductDto: UpdateProductDto) {
-    return `This action updates a #${id} product`;
+  async update(id: number, updateProductDto: UpdateProductDto) {
+    const { id: __, ...data } = updateProductDto;
+
+    await this.findOne(id);
+
+    return this.product.update({
+      where: { id },
+      data: data,
+    });
   }
 
   remove(id: number) {
