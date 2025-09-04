@@ -47,4 +47,23 @@ export class ProductsService extends PrismaClient implements OnModuleInit {
   remove(id: number) {
     return `This action removes a #${id} product`;
   }
+
+  async validateProducts(ids: number[]) {
+    ids = Array.from(new Set(ids)); // Elimina IDs duplicados
+
+    const products = await this.product.findMany({
+      where: {
+        id: {
+          in: ids,
+        },
+      },
+    });
+
+    if (products.length !== ids.length) {
+      throw new Error(`Some products are not available`);
+      //TODO: Mejorar el error para saber cuales productos no existen
+      // Usar RpcException 
+    }
+    return products;
+  }
 }
