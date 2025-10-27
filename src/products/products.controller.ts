@@ -41,7 +41,7 @@ export class ProductsController {
 
   // Validacion de productos por lista de IDs
   @MessagePattern({ cmd: 'validate_products' })
-  async validateProducts(@Payload('ids') ids: number[]) {
+  async validateProducts(@Payload() ids: number[]) {
     return this.productsService.validateProducts(ids);
   }
 }
